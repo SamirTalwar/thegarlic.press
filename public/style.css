@@ -1,3 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  height: 40px;
+  border-bottom: 1px solid #BBB;
+}
+
+.logo {
+  padding-left: 10px;
+}
+
+.garlic {
+  color: green;
+}
+
 .container {
   padding-top: 50px;
   max-width: 600px;
@@ -64,6 +85,7 @@ h1 {
   border-radius: 5px;
   margin-bottom: 20px;
   padding: 10px;
+  min-height: 100px;
 }
 
 .item:nth-child(2n) {
@@ -71,9 +93,10 @@ h1 {
 }
 
 .item .snapshot {
-  float: left;
-  width: 30px;
-  margin-left: -50px;
+  float: right;
+  width: 42%;
+  margin-right: -48%;
+  margin-top: -10px;
 }
 
 .item .snapshot img {
@@ -81,6 +104,6 @@ h1 {
 }
 
 .item:nth-child(2n) .snapshot {
-  float: right;
-  margin-right: -50px;
+  float: left;
+  margin-left: -48%;
 }
