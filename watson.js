@@ -3,14 +3,12 @@ const fs = require('fs')
 const path = require('path')
 const Promise = require('bluebird')
 
-const speechToText = watson.speech_to_text({
-  username: <YOUR CREDS HERE>,
-  password: <YOUR CREDS HERE>,
-  version: 'v1',
-  url: 'https://stream.watsonplatform.net/speech-to-text/api'
-})
+exports.watsonSpeechToText = function (config, audioFile) {
+  const speechToText = watson.speech_to_text(Object.assign({
+    version: 'v1',
+    url: 'https://stream.watsonplatform.net/speech-to-text/api'
+  }, config))
 
-exports.watsonSpeechToText = function (audioFile) {
   return new Promise(function (resolve, reject) {
     const params = {
       content_type: 'audio/flac',
