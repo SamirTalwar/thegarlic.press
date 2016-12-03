@@ -19,7 +19,7 @@
           <%= m.emoji %>
         </span>
       <% } %>
-      <%= m.value %>
+      <%= m.value.replace(/%HESITATION/g, '🤔') %>
     </div>
   <% } else if (m.type === 'gif') {  %>
     <div class="<%= m.type %>">
