@@ -12,5 +12,8 @@
     "bluebird": "^3.0.6",
     "fluent-ffmpeg": "^2.0.1",
     "watson-developer-cloud": "^1.0.6"
+  },
+  "devDependencies": {
+    "standard": "^8.6.0"
   }
 }
