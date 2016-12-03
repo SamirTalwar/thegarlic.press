@@ -7,6 +7,18 @@ brew install ffmpeg youtube-dl
 npm install
 ```
 
+Create a file called *config.json*:
+
+```json
+{
+  "port": 8080,
+  "watson": {
+    "username": "your username",
+    "password": "your password"
+  }
+}
+```
+
 ## Running it
 
 ```sh
