@@ -1,3 +1,4 @@
+const {denodeify} = require('./promise')
 const spawn = require('child_process').spawn
 const ffmpeg = require('fluent-ffmpeg')
 const fs = require('fs')
@@ -38,14 +39,3 @@ exports.getYouTubeAudio = function (videoId) {
       })))
     .then(() => audioFlacFile)
 }
-
-const denodeify = func => (...args) =>
-  new Promise((resolve, reject) => {
-    func(...args, (error, value) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(value)
-      }
-    })
-  })
