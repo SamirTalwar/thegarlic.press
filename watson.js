@@ -5,41 +5,38 @@ const fs = require('fs')
 const ToneAnalyzerVersion = '2016-05-19'
 
 module.exports = config => {
-  const speechToText = (videoId, audioFile, onLine) => {
-    const speechToText = watson.speech_to_text(Object.assign({
-      version: 'v1',
-      model: 'en-US_NarrowbandModel',
-      speaker_labels: true
-    }, config['speech-to-text']))
+  const watsonSpeechToText = watson.speech_to_text(Object.assign({
+    version: 'v1',
+    model: 'en-US_NarrowbandModel',
+    speaker_labels: true
+  }, config['speech-to-text']))
+  const watsonToneAnalyzer = watson.tone_analyzer(Object.assign({
+    version: 'v3',
+    version_date: ToneAnalyzerVersion
+  }, config['tone-analyzer']))
+  const alchemyLanguage = watson.alchemy_language(Object.assign({
+    version: 'v1'
+  }, config['alchemy-language']))
 
-    const params = {
+  const api = {
+    recognize: denodeify(watsonSpeechToText.recognize.bind(watsonSpeechToText)),
+    tone: denodeify(watsonToneAnalyzer.tone.bind(watsonToneAnalyzer)),
+    concepts: denodeify(alchemyLanguage.concepts.bind(alchemyLanguage))
+  }
+
+  const speechToText = (videoId, audioFile, onLine) =>
+    api.recognize({
       content_type: 'audio/flac',
       audio: fs.createReadStream(audioFile),
       timestamps: true,
       continuous: true,
       model: 'en-US_NarrowbandModel',
       speaker_labels: true
-    }
+    })
 
-    return denodeify(speechToText.recognize.bind(speechToText))(params)
-  }
+  const toneAnalyzer = text => api.tone({text})
 
-  const toneAnalyzer = text => {
-    const toneAnalyzer = watson.tone_analyzer(Object.assign({
-      version: 'v3',
-      version_date: ToneAnalyzerVersion
-    }, config['tone-analyzer']))
-
-    return denodeify(toneAnalyzer.tone.bind(toneAnalyzer))({text})
-  }
-
-  const concepts = text => {
-    const alchemyLanguage = watson.alchemy_language(Object.assign({
-      version: 'v1'
-    }, config['alchemy-language']))
-
-    return denodeify(alchemyLanguage.concepts.bind(alchemyLanguage))({text})
-  }
+  const concepts = text => api.concepts({text})
 
   const analyze = (videoId, audioFile) => {
     console.log(`${videoId}: Analysing...`)
