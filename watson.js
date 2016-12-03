@@ -7,17 +7,20 @@ const ToneAnalyzerVersion = '2016-05-19'
 module.exports = config => {
   const speechToText = (videoId, audioFile, onLine) => {
     const speechToText = watson.speech_to_text(Object.assign({
-      version: 'v1'
+      version: 'v1',
+      model: 'en-US_NarrowbandModel',
+      speaker_labels: true
     }, config['speech-to-text']))
 
     const params = {
       content_type: 'audio/flac',
       audio: fs.createReadStream(audioFile),
       timestamps: true,
-      continuous: true
+      continuous: true,
+      model: 'en-US_NarrowbandModel',
+      speaker_labels: true
     }
 
-    // create the stream
     return denodeify(speechToText.recognize.bind(speechToText))(params)
   }
 
@@ -73,7 +76,7 @@ module.exports = config => {
       })
       .then(transcript => {
         console.log(`${videoId}: Saving...`)
-        return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript))
+        return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
           .then(() => {
             console.log(`${videoId}: Analysis complete.`)
             return transcript
