@@ -13,8 +13,10 @@ Create a file called *config.json*:
 {
   "port": 8080,
   "watson": {
-    "username": "your username",
-    "password": "your password"
+    "speech-to-text": {
+      "username": "your username",
+      "password": "your password"
+    }
   }
 }
 ```

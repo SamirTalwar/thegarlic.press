@@ -7,7 +7,7 @@ module.exports = config => ({
     const speechToText = watson.speech_to_text(Object.assign({
       version: 'v1',
       url: 'https://stream.watsonplatform.net/speech-to-text/api'
-    }, config))
+    }, config['speech-to-text']))
 
     const transcriptFile = `videos/${videoId}.transcript`
     return denodeify(fs.readFile)(transcriptFile)
