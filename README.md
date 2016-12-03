@@ -7,7 +7,7 @@ brew install ffmpeg youtube-dl
 npm install
 ```
 
-Create file called *config.json*:
+Create a file called *config.json*:
 
 ```json
 {
