@@ -57,3 +57,30 @@ h1 {
   letter-spacing: .3px;
   text-transform: uppercase;
 }
+
+.item {
+  width: 70%;
+  border: 1px solid #BBB;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.item:nth-child(2n) {
+  margin-left: 30%;
+}
+
+.item .snapshot {
+  float: left;
+  width: 30px;
+  margin-left: -50px;
+}
+
+.item .snapshot img {
+  width: 100%;
+}
+
+.item:nth-child(2n) .snapshot {
+  float: right;
+  margin-right: -50px;
+}

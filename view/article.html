@@ -12,19 +12,17 @@
 
 <div class="transcript">
 <% transcript.map(function (m) { %>
-  <% if (m.type === 'text') { %>
-    <div class="<%= m.type %>">
-      <% if (m.emoji) { %>
-        <span class="<%= 'emoji ' + (Math.random() > 0.5 ? 'left' : 'right') %>">
-          <%= m.emoji %>
-        </span>
-      <% } %>
-      <%= m.value.replace(/%HESITATION/g, '🤔') %>
-    </div>
-  <% } else if (m.type === 'gif') {  %>
-    <div class="<%= m.type %>">
-      <img src="<%= m.value %>" alt="<%= m.alt %>">
-    </div>
-  <% } %>
+  <div class="item">
+    <% if (m.snapshot) { %>
+      <div class="snapshot">
+        <img src="<%= m.snapshot %>" alt="snapshot">
+      </div>
+    <% } %>
+    <% m.sentences.map(function (s) { %>
+      <div>
+        <%= s.text.replace(/%HESITATION/g, '🤔') %>
+      </div>
+    <% }) %>
+  </div>
 <% }) %>
 </div>
