@@ -102,11 +102,11 @@ module.exports = config => {
       }))
       .then(augment(() => false, transcript => {
         var transcriptFileTransformed = transcriptFile + '_transformed'
-        console.log(`${videoId}: Saving transformed version...`)
+        console.log(`${video.id}: Saving transformed version...`)
         return denodeify(fs.writeFile)(transcriptFileTransformed,
           JSON.stringify(transform(transcript), null, 2))
           .then(() => {
-            console.log(`${videoId}: Transformation complete.`)
+            console.log(`${video.id}: Transformation complete.`)
           })
       }))
   }
