@@ -44,9 +44,12 @@ module.exports = config => {
                 transcript.results = resultsWithTones
                 return transcript
               }))
-          .then(transcript => denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript)))
-          .then(() => {
-            console.log('Transcription complete.')
+          .then(transcript => {
+            return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript))
+              .then(() => {
+                console.log('Transcription complete.')
+                return transcript
+              })
           }))
   }
 
