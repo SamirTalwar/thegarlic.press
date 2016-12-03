@@ -9,8 +9,7 @@ exports.watsonSpeechToText = function (config, videoId, audioFile) {
   }, config))
 
   const transcriptFile = `videos/${videoId}.transcript`
-  return denodeify(fs.stat)(transcriptFile)
-    .then(() => console.log('Transcript already exists.'))
+  return denodeify(fs.readFile)(transcriptFile)
     .catch(() => new Promise(function (resolve, reject) {
       const params = {
         content_type: 'audio/flac',
@@ -49,7 +48,7 @@ exports.watsonSpeechToText = function (config, videoId, audioFile) {
             reject(err)
           } else {
             console.log('Transcription complete.')
-            resolve()
+            resolve(results)
           }
         })
       })
