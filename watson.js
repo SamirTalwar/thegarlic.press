@@ -1,7 +1,7 @@
 const {denodeify} = require('./promise')
 const watson = require('watson-developer-cloud')
 const fs = require('fs')
-
+const transform = require('./transform')
 const ToneAnalyzerVersion = '2016-05-19'
 
 module.exports = config => {
@@ -99,6 +99,15 @@ module.exports = config => {
         return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
           .then(() => {
             console.log(`${videoId}: Analysis complete.`)
+          })
+      }))
+      .then(augment(() => false, transcript => {
+        var transcriptFileTransformed = transcriptFile + '_transformed'
+        console.log(`${videoId}: Saving transformed version...`)
+        return denodeify(fs.writeFile)(transcriptFileTransformed,
+          JSON.stringify(transform(transcript), null, 2))
+          .then(() => {
+            console.log(`${videoId}: Transformation complete.`)
           })
       }))
   }

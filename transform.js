@@ -64,12 +64,12 @@ function groupBySpeaker(list) {
         speaker: o.speaker,
         start: o.start,
         end: o.end,
-        sentencies: [o]
+        sentences: [o]
       })
     } else {
       var last = arr[arr.length - 1]
       last.end = o.end
-      last.sentencies.push(o)
+      last.sentences.push(o)
     }
   })
   return arr
