@@ -24,6 +24,9 @@ Create a file called *config.json*:
       "username": "your username",
       "password": "your password"
     }
+  },
+  "youtube": {
+    "api_key": "your API key"
   }
 }
 ```
