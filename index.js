@@ -1,8 +1,8 @@
-var watson = require('./watson')
-var youtube = require('./youtube')
-var path = require('path')
+const watson = require('./watson')
+const youtube = require('./youtube')
+const path = require('path')
 
-var flags = process.argv.slice(2)
+const flags = process.argv.slice(2)
 
 if (flags[0] === 'transcribe') {
   youtube.getYouTubeAudio(flags[1])

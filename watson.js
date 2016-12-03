@@ -1,9 +1,9 @@
-var watson = require('watson-developer-cloud')
-var fs = require('fs')
-var path = require('path')
-var Promise = require('bluebird')
+const watson = require('watson-developer-cloud')
+const fs = require('fs')
+const path = require('path')
+const Promise = require('bluebird')
 
-var speechToText = watson.speech_to_text({
+const speechToText = watson.speech_to_text({
   username: <YOUR CREDS HERE>,
   password: <YOUR CREDS HERE>,
   version: 'v1',
@@ -12,16 +12,16 @@ var speechToText = watson.speech_to_text({
 
 exports.watsonSpeechToText = function (audioFile) {
   return new Promise(function (resolve, reject) {
-    var params = {
+    const params = {
       content_type: 'audio/flac',
       timestamps: true,
       continuous: true
     }
 
-    var results = []
+    const results = []
 
     // create the stream
-    var recognizeStream = speechToText.createRecognizeStream(params)
+    const recognizeStream = speechToText.createRecognizeStream(params)
 
     // pipe in some audio
     fs.createReadStream(audioFile).pipe(recognizeStream)
@@ -44,7 +44,7 @@ exports.watsonSpeechToText = function (audioFile) {
     recognizeStream.on('error', reject)
 
     recognizeStream.on('connection-close', function () {
-      var transcriptFile = path.join(__dirname, 'transcript.json')
+      const transcriptFile = path.join(__dirname, 'transcript.json')
 
       fs.writeFile(transcriptFile, JSON.stringify(results), function (err) {
         if (err) {

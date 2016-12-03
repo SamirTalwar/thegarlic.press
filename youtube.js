@@ -1,7 +1,7 @@
-var spawn = require('child_process').spawn
-var Promise = require('bluebird')
-var ffmpeg = require('fluent-ffmpeg')
-var path = require('path')
+const spawn = require('child_process').spawn
+const Promise = require('bluebird')
+const ffmpeg = require('fluent-ffmpeg')
+const path = require('path')
 
 exports.getYouTubeAudio = function (videoId) {
   return new Promise(function (resolve, reject) {
@@ -18,8 +18,8 @@ exports.getYouTubeAudio = function (videoId) {
 
     // brew install ffmpeg
     youtubeDl.on('exit', function () {
-      var mp3File = path.join(__dirname, 'file.mp3')
-      var flacFile = path.join(__dirname, 'file.flac')
+      const mp3File = path.join(__dirname, 'file.mp3')
+      const flacFile = path.join(__dirname, 'file.flac')
       ffmpeg(mp3File)
         .output(flacFile)
         .on('end', function () {
