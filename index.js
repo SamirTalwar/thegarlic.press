@@ -30,7 +30,9 @@ app.use(route.get('/:videoId', function*(videoId) {
         value: t.results[0].alternatives.sort((a, b) => a.confidence - b.confidence)[0].transcript
       }
     }),
-    metadata: {}
+    metadata: {
+      concepts: require('./mock/concept.json')
+    }
   })
 }))
 
