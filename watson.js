@@ -50,12 +50,13 @@ module.exports = config => {
     if (predicate(transcript)) {
       return transcript
     }
-    return behaviour(transcript)
-      .then(() => transcript)
+    const result = behaviour(transcript)
+    if (result && result.then) {
+      return result.then(() => transcript)
+    } else {
+      return transcript
+    }
   }
-
-  const extractText = transcript =>
-    transcript.results.map(result => result.alternatives[0].transcript).join('\n')
 
   const analyze = (videoId, audioFile) => {
     console.log(`${videoId}: Analysing...`)
@@ -66,6 +67,10 @@ module.exports = config => {
         console.log(`${videoId}: Converting speech to text...`)
         return speechToText(videoId, audioFile)
       })
+      .then(augment(transcript => transcript.text, transcript => {
+        console.log(`${videoId}: Concatenating text...`)
+        transcript.text = transcript.results.map(result => result.alternatives[0].transcript).join('\n')
+      }))
       .then(augment(transcript => transcript.results[0].document_tone, transcript => {
         console.log(`${videoId}: Identifying tone...`)
         return Promise.all(transcript.results.map(result =>
@@ -77,14 +82,14 @@ module.exports = config => {
       }))
       .then(augment(transcript => transcript.concepts, transcript => {
         console.log(`${videoId}: Extracting concepts...`)
-        return concepts(extractText(transcript))
+        return concepts(transcript.text)
           .then(result => {
             transcript.concepts = result.concepts
           })
       }))
       .then(augment(transcript => transcript.keywords, transcript => {
         console.log(`${videoId}: Extracting keywords...`)
-        return keywords(extractText(transcript))
+        return keywords(transcript.text)
           .then(result => {
             transcript.keywords = result.keywords
           })
