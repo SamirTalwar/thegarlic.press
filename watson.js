@@ -9,7 +9,7 @@ exports.watsonSpeechToText = function (config, videoId, audioFile) {
   }, config))
 
   const transcriptFile = `videos/${videoId}.transcript`
-  return denodeify(fs.readFile)(transcriptFile)
+  return denodeify(fs.readFile)(transcriptFile, 'utf-8').then(JSON.parse)
     .catch(() => new Promise(function (resolve, reject) {
       const params = {
         content_type: 'audio/flac',

@@ -1,0 +1,25 @@
+<h3>TL;DR;</h3>
+<% metadata && metadata.concepts && metadata.concepts.filter(function (c) { return c.relevance > 0.3 }).map(function (c) { %>
+   <div>
+     <%= c.text %>
+     <%= c.sentiment.type === 'positive' ? '👍' : (c.sentiment.type === 'negative' ? '👎' : '') %>
+   </div>
+<% }) %>
+
+<h3>Transcript</h3>
+<% transcript.map(function (m) { %>
+  <% if (m.type === 'text') { %>
+    <div class="<%= m.type %>">
+      <% if (m.emoji) { %>
+        <span class="<%= 'emoji ' + (Math.random() > 0.5 ? 'left' : 'right') %>">
+          <%= m.emoji %>
+        </span>
+      <% } %>
+      <%= m.value %>
+    </div>
+  <% } else if (m.type === 'gif') {  %>
+    <div class="<%= m.type %>">
+      <img src="<%= m.value %>" alt="<%= m.alt %>">
+    </div>
+  <% } %>
+<% }) %>
