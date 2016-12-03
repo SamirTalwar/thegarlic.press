@@ -13,6 +13,9 @@ Create a file called *config.json*:
 {
   "port": 8080,
   "watson": {
+    "alchemy-language": {
+      "api_key": "your API key"
+    },
     "speech-to-text": {
       "username": "your username",
       "password": "your password"

@@ -1,0 +1,26 @@
+[{
+  "speaker": 1,
+  "timestamp": 10,
+  "snapshot": "/snapshots/io9hCBz3yWs-10.png",
+  "sentences": [{
+    "text": "asdasdasdsad",
+    "emotion": "sadness",
+    "language_tone": "analytical",
+    "social_tone": "extraversion_big5"
+  }]
+},{
+  "speaker": 2,
+  "timestamp": 30,
+  "snapshot": "/snapshots/io9hCBz3yWs-30.png",
+  "sentences": [{
+    "text": "asdasdasdsad",
+    "emotion": "sadness",
+    "language_tone": "analytical",
+    "social_tone": "extraversion_big5"
+  }, {
+    "text": "asdasdasdsad",
+    "emotion": "sadness",
+    "language_tone": "analytical",
+    "social_tone": "extraversion_big5"
+  }]
+}]
