@@ -1,5 +1,5 @@
 const {denodeify} = require('./promise')
-const spawn = require('child_process').spawn
+const childProcess = require('child_process')
 const ffmpeg = require('fluent-ffmpeg')
 const fs = require('fs')
 const request = require('request-promise-native')
@@ -27,22 +27,23 @@ module.exports = config => {
       return denodeify(fs.stat)(audioFlacFile)
         .catch(() =>
           new Promise((resolve, reject) => {
-            const youtubeDl = spawn('youtube-dl', [
+            const youtubeDl = childProcess.spawn('youtube-dl', [
               '--extract-audio',
               '--keep-video',
               '--audio-format=mp3',
               `--output=${fileFormat}`,
               videoUrl
-            ])
-
-            youtubeDl.stdout.on('data', data => {
-              console.log(data.toString())
-            })
-            youtubeDl.stderr.on('data', data => {
-              process.stderr.write(data)
+            ], {
+              stdio: 'inherit'
             })
 
-            youtubeDl.on('exit', resolve)
+            youtubeDl.on('exit', code => {
+              if (code === 0) {
+                resolve()
+              } else {
+                reject()
+              }
+            })
             youtubeDl.on('error', reject)
           })
           .then(() => new Promise((resolve, reject) => {
