@@ -34,6 +34,12 @@ module.exports = config => {
       model: 'en-US_NarrowbandModel',
       speaker_labels: true
     })
+      .then(transcript => {
+        transcript.results.forEach(result => {
+          result.alternatives.sort((a, b) => a.confidence - b.confidence)
+        })
+        return transcript
+      })
 
   const toneAnalyzer = text => api.tone({text})
 

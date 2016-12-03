@@ -19,13 +19,18 @@ render(app, {
 
 app.use(serve(path.join(__dirname, 'public')))
 
+app.use(route.get('/:videoId.transcript', function*(videoId) {
+  console.log(`HTTP GET /${videoId}.transcript`)
+  this.type = 'application/json'
+  this.body = yield youtube.getYouTubeAudio(videoId)
+    .then(audioFile => watson.analyze(videoId, audioFile))
+}))
+
 app.use(route.get('/:videoId', function*(videoId) {
   console.log(`HTTP GET /${videoId}`)
   const transcript = yield youtube.getYouTubeAudio(videoId)
     .then(audioFile => watson.analyze(videoId, audioFile))
-  transcript.results.forEach(result => {
-    result.alternatives.sort((a, b) => a.confidence - b.confidence)
-  })
+  this.type = 'text/html'
   yield this.render('article', {
     title: 'Youtube video',
     transcript: transcript.results.map(result => {
