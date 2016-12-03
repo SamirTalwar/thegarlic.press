@@ -2,6 +2,23 @@
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+}
+
+header {
+  height: 40px;
+  border-bottom: 1px solid #BBB;
+}
+
+.logo {
+  padding-left: 10px;
+}
+
+.garlic {
+  color: green;
+}
+
 .container {
   padding-top: 50px;
   max-width: 600px;
