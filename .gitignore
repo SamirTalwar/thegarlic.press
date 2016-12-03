@@ -1,5 +1,4 @@
 node_modules
 config.json
 transcript.json
-*.flac
-*.mp3
+videos

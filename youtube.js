@@ -1,34 +1,51 @@
 const spawn = require('child_process').spawn
-const Promise = require('bluebird')
 const ffmpeg = require('fluent-ffmpeg')
-const path = require('path')
+const fs = require('fs')
 
 exports.getYouTubeAudio = function (videoId) {
-  return new Promise(function (resolve, reject) {
-      // Install youtube-dl locally: brew install youtube-dl
-    const youtubeDl = spawn('youtube-dl', ['--extract-audio', '--audio-format', 'mp3', '-o', 'file.%(ext)s', 'http://www.youtube.com/watch?v=' + videoId])
+  const videoUrl = `http://www.youtube.com/watch?v=${videoId}`
+  const fileFormat = `videos/${videoId}.%(ext)s`
+  const audioMp3File = `videos/${videoId}.mp3`
+  const audioFlacFile = `videos/${videoId}.flac`
 
-    youtubeDl.stdout.on('data', function (data) {
-      console.log(data.toString())
-    })
+  return denodeify(fs.stat)(audioFlacFile)
+    .catch(() =>
+      new Promise((resolve, reject) => {
+        const youtubeDl = spawn('youtube-dl', [
+          '--extract-audio',
+          '--keep-video',
+          '--audio-format=mp3',
+          `--output=${fileFormat}`,
+          videoUrl
+        ])
 
-    youtubeDl.stderr.on('data', function (data) {
-      process.stderr.write(data)
-    })
-
-    // brew install ffmpeg
-    youtubeDl.on('exit', function () {
-      const mp3File = path.join(__dirname, 'file.mp3')
-      const flacFile = path.join(__dirname, 'file.flac')
-      ffmpeg(mp3File)
-        .output(flacFile)
-        .on('end', function () {
-          resolve()
+        youtubeDl.stdout.on('data', data => {
+          console.log(data.toString())
         })
-        .on('error', function (err) {
-          reject(err)
+        youtubeDl.stderr.on('data', data => {
+          process.stderr.write(data)
         })
-        .run()
+
+        youtubeDl.on('exit', resolve)
+        youtubeDl.on('error', reject)
+      })
+      .then(() => new Promise((resolve, reject) => {
+        ffmpeg(audioMp3File)
+          .output(audioFlacFile)
+          .on('end', resolve)
+          .on('error', reject)
+          .run()
+      })))
+    .then(() => audioFlacFile)
+}
+
+const denodeify = func => (...args) =>
+  new Promise((resolve, reject) => {
+    func(...args, (error, value) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(value)
+      }
     })
   })
-}

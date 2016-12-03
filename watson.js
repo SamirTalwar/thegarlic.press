@@ -1,7 +1,6 @@
 const watson = require('watson-developer-cloud')
 const fs = require('fs')
 const path = require('path')
-const Promise = require('bluebird')
 
 exports.watsonSpeechToText = function (config, audioFile) {
   const speechToText = watson.speech_to_text(Object.assign({
