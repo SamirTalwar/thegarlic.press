@@ -1,10 +1,14 @@
-# youtube-transcriber
+# TCDisrupt2016
 
-Make sure to install 'youtube-dl' and 'ffmpeg' <br>
+## Set up
 
-If you have homebrew:
-<pre>brew install youtube-dl</pre><br>
-<pre>brew install ffmpeg</pre><br>
+```sh
+brew install ffmpeg youtube-dl
+npm install
+```
 
-Then run:<br>
-<pre>node index.js transcribe VIDEOID</pre>
+## Running it
+
+```sh
+npm start
+```
