@@ -30,27 +30,55 @@ module.exports = config => {
     return denodeify(toneAnalyzer.tone.bind(toneAnalyzer))({text})
   }
 
+  const concepts = text => {
+    const alchemyLanguage = watson.alchemy_language(Object.assign({
+      version: 'v1'
+    }, config['alchemy-language']))
+
+    return denodeify(alchemyLanguage.concepts.bind(alchemyLanguage))({text})
+  }
+
   const analyze = (videoId, audioFile) => {
+    console.log(`${videoId}: Analysing...`)
     const transcriptFile = `videos/${videoId}.transcript`
     return denodeify(fs.readFile)(transcriptFile)
       .then(JSON.parse)
-      .catch(() =>
-        speechToText(videoId, audioFile)
-          .then(transcript =>
-            Promise.all(transcript.results.map(result =>
-              toneAnalyzer(result.alternatives[0].transcript)
-                .then(tone => Object.assign({}, result, tone))))
-              .then(resultsWithTones => {
-                transcript.results = resultsWithTones
-                return transcript
-              }))
-          .then(transcript => {
-            return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript))
-              .then(() => {
-                console.log('Transcription complete.')
-                return transcript
-              })
-          }))
+      .catch(() => {
+        console.log(`${videoId}: Converting speech to text...`)
+        return speechToText(videoId, audioFile)
+      })
+      .then(transcript => {
+        if (transcript.results[0].document_tone) {
+          return transcript
+        }
+        console.log(`${videoId}: Identifying tone...`)
+        return Promise.all(transcript.results.map(result =>
+          toneAnalyzer(result.alternatives[0].transcript)
+            .then(tone => Object.assign({}, result, tone))))
+          .then(resultsWithTones => {
+            transcript.results = resultsWithTones
+            return transcript
+          })
+      })
+      .then(transcript => {
+        if (transcript.concepts) {
+          return transcript
+        }
+        console.log(`${videoId}: Extracting concepts...`)
+        return concepts(transcript.results.map(result => result.alternatives[0].transcript).join('\n'))
+          .then(result => {
+            transcript.concepts = result.concepts
+            return transcript
+          })
+      })
+      .then(transcript => {
+        console.log(`${videoId}: Saving...`)
+        return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript))
+          .then(() => {
+            console.log(`${videoId}: Analysis complete.`)
+            return transcript
+          })
+      })
   }
 
   return {
