@@ -1,7 +1,8 @@
 const {denodeify} = require('./promise')
 const watson = require('watson-developer-cloud')
 const fs = require('fs')
-const transform = require('./transform')
+const groupBySpeaker = require('./groupBySpeaker')
+const addScreenshots = require('./addScreenshots')
 const ToneAnalyzerVersion = '2016-05-19'
 
 module.exports = config => {
@@ -67,6 +68,9 @@ module.exports = config => {
         console.log(`${videoId}: Converting speech to text...`)
         return speechToText(videoId, audioFile)
       })
+      .then(augment(transcript => transcript.videoId, transcript => {
+        transcript.videoId = videoId
+      }))
       .then(augment(transcript => transcript.text, transcript => {
         console.log(`${videoId}: Concatenating text...`)
         transcript.text = transcript.results.map(result => result.alternatives[0].transcript).join('\n')
@@ -94,20 +98,16 @@ module.exports = config => {
             transcript.keywords = result.keywords
           })
       }))
+      .then(augment(transcript => transcript.bySpeaker, transcript => {
+        console.log(`${videoId}: Group by skeaper and add screenshots...`)
+        transcript.bySpeaker = groupBySpeaker(transcript)
+        return addScreenshots(transcript)
+      }))
       .then(augment(() => false, transcript => {
         console.log(`${videoId}: Saving...`)
         return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
           .then(() => {
             console.log(`${videoId}: Analysis complete.`)
-          })
-      }))
-      .then(augment(() => false, transcript => {
-        var transcriptFileTransformed = transcriptFile + '_transformed'
-        console.log(`${videoId}: Saving transformed version...`)
-        return denodeify(fs.writeFile)(transcriptFileTransformed,
-          JSON.stringify(transform(transcript), null, 2))
-          .then(() => {
-            console.log(`${videoId}: Transformation complete.`)
           })
       }))
   }

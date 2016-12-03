@@ -37,6 +37,7 @@ function speakerAtTime(raw, alt) {
 
 function sentencies(raw) {
   return raw.results.map(x => {
+    var videoId = raw.videoId
     var alt = x.alternatives[0]
     var text = alt.transcript
     var start = alt.timestamps[0][1]
@@ -50,7 +51,7 @@ function sentencies(raw) {
         tones[t.category_id] = val
       }
     })
-    return Object.assign({}, {text, start, end, speaker}, tones)
+    return Object.assign({}, {text, start, end, speaker, videoId}, tones)
   })
 }
 
@@ -62,10 +63,12 @@ function groupBySpeaker(list) {
       lastSpeaker = o.speaker
       arr.push({
         speaker: o.speaker,
+        videoId: o.videoId,
         start: o.start,
         end: o.end,
         sentences: [o]
       })
+      delete o.videoId // don't need it anymore...
     } else {
       var last = arr[arr.length - 1]
       last.end = o.end
