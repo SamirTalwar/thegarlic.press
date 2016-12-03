@@ -1,18 +1,43 @@
 const Watson = require('./watson')
 const youtube = require('./youtube')
 const fs = require('fs')
+const path = require('path')
 const koa = require('koa')
 const route = require('koa-route')
+const render = require('koa-ejs')
+const serve = require('koa-static')
 
 const config = JSON.parse(fs.readFileSync('config.json'))
 const watson = Watson(config.watson)
 
 const app = koa()
+
+render(app, {
+  root: path.join(__dirname, 'view'),
+  cache: false
+})
+
+app.use(serve(path.join(__dirname, 'public')))
+
 app.use(route.get('/:videoId', function*(videoId) {
   console.log(`HTTP GET /${videoId}`)
-  this.type = 'application/json'
-  this.body = yield youtube.getYouTubeAudio(videoId)
+  const transcript = yield youtube.getYouTubeAudio(videoId)
     .then(audioFile => watson.analyze(videoId, audioFile))
+  transcript.results.forEach(result => {
+    result.alternatives.sort((a, b) => a.confidence - b.confidence)
+  })
+  yield this.render('article', {
+    title: 'Youtube video',
+    transcript: transcript.results.map(result => {
+      return {
+        type: 'text',
+        value: result.alternatives[0].transcript
+      }
+    }),
+    metadata: {
+      concepts: require('./mock/concept.json')
+    }
+  })
 }))
 
 new Promise(resolve => {
