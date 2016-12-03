@@ -26,20 +26,7 @@ header {
   text-align: center;
   text-align: left;
   margin: 0 auto;
-}
-
-.emoji {
-  font-size: 3em;
   position: relative;
-  margin: 10px;
-}
-
-.emoji.right {
-  float: right;
-}
-
-.emoji.left {
-  float: left;
 }
 
 .transcript {
@@ -106,4 +93,16 @@ h1 {
 .item:nth-child(2n) .snapshot {
   float: left;
   margin-left: -48%;
+}
+
+.emoji {
+  font-size: 3em;
+  position: absolute;
+  right: -20px;
+  margin-top: -30px;
+}
+
+.item:nth-child(2n) .emoji {
+  left: -20px;
+  margin-top: -30px;
 }

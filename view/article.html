@@ -11,11 +11,17 @@
 </div>
 
 <div class="transcript">
+<% var emojiMap = {sadness: '😔', anger: '😡', disgust: '🤢', fear: '😱', joy: '😊'} %>
 <% transcript.map(function (m) { %>
   <div class="item">
     <% if (m.snapshot) { %>
       <div class="snapshot">
         <img src="<%= m.snapshot %>" alt="snapshot">
+      </div>
+    <% } %>
+    <% var emotion = (m.sentences.find(function(s) { return s.emotion_tone }) || {}).emotion_tone; if (emotion) { %>
+      <div class="emoji">
+        <%= emojiMap[emotion] %>
       </div>
     <% } %>
     <% m.sentences.map(function (s) { %>
