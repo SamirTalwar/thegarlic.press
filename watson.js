@@ -1,3 +1,4 @@
+const {augment} = require('./munge')
 const {denodeify} = require('./promise')
 const watson = require('watson-developer-cloud')
 const fs = require('fs')
@@ -51,18 +52,6 @@ module.exports = config => {
     emotion: 1,
     sentiment: 1
   })
-
-  const augment = (predicate, behaviour) => transcript => {
-    if (predicate(transcript)) {
-      return transcript
-    }
-    const result = behaviour(transcript)
-    if (result && result.then) {
-      return result.then(() => transcript)
-    } else {
-      return transcript
-    }
-  }
 
   const analyze = (videoId, audioFile) => {
     console.log(`${videoId}: Analysing...`)
