@@ -2,8 +2,8 @@ const {denodeify} = require('./promise')
 const watson = require('watson-developer-cloud')
 const fs = require('fs')
 
-module.exports = config => ({
-  speechToText: (videoId, audioFile) => {
+module.exports = config => {
+  const speechToText = (videoId, audioFile) => {
     const speechToText = watson.speech_to_text(Object.assign({
       version: 'v1',
       url: 'https://stream.watsonplatform.net/speech-to-text/api'
@@ -55,4 +55,11 @@ module.exports = config => ({
         })
       }))
   }
-})
+
+  const analyze = speechToText
+
+  return {
+    analyze,
+    speechToText
+  }
+}

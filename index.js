@@ -12,7 +12,7 @@ app.use(route.get('/:videoId', function*(videoId) {
   console.log(`HTTP GET /${videoId}`)
   this.type = 'application/json'
   this.body = yield youtube.getYouTubeAudio(videoId)
-    .then(audioFile => watson.speechToText(videoId, audioFile))
+    .then(audioFile => watson.analyze(videoId, audioFile))
 }))
 
 new Promise(resolve => {
