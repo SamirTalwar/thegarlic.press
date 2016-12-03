@@ -1,0 +1,54 @@
+[
+  {
+    "speaker": "3",
+    "start": 0.03,
+    "end": 15.32,
+    "sentencies": [
+      {
+        "text": "but these people all they got is this author is going home in a in a Honda civic ",
+        "start": 0.03,
+        "end": 5.85,
+        "speaker": "3",
+        "emotion_tone": "sadness",
+        "language_tone": "confident",
+        "social_tone": "openness_big5"
+      },
+      {
+        "text": "do you agree with this thing they ever owned in your life ",
+        "start": 11.88,
+        "end": 15.32,
+        "speaker": "3",
+        "emotion_tone": "joy",
+        "language_tone": "confident",
+        "social_tone": "conscientiousness_big5"
+      }
+    ]
+  },
+  {
+    "speaker": "2",
+    "start": 16.28,
+    "end": 19.18,
+    "sentencies": [
+      {
+        "text": "in a given anxiety to keep it in their crappy apartment ",
+        "start": 16.28,
+        "end": 19.18,
+        "speaker": "2"
+      }
+    ]
+  },
+  {
+    "speaker": "0",
+    "start": 23.64,
+    "end": 26.08,
+    "sentencies": [
+      {
+        "text": "Sears anomalies for best documentary short ",
+        "start": 23.64,
+        "end": 26.08,
+        "speaker": "0",
+        "social_tone": "agreeableness_big5"
+      }
+    ]
+  }
+]
