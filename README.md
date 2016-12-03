@@ -16,6 +16,10 @@ Create a file called *config.json*:
     "speech-to-text": {
       "username": "your username",
       "password": "your password"
+    },
+    "tone-analyzer": {
+      "username": "your username",
+      "password": "your password"
     }
   }
 }
