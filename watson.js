@@ -28,19 +28,19 @@ exports.watsonSpeechToText = function (config, audioFile) {
 
     recognizeStream.setEncoding('utf8') // to get strings instead of Buffers from `data` events
 
-    recognizeStream.on('results', function (e) {
-      if (e.results[0].final) {
-        results.push(e)
+    recognizeStream.on('results', event => {
+      if (event.results[0].final) {
+        results.push(event)
       }
-    });
+    })
 
-    ['data', 'results', 'error', 'connection-close'].forEach(function (eventName) {
-      recognizeStream.on(eventName, console.log.bind(console, eventName + ' event: '))
+    ;['data', 'error', 'end'].forEach(function (eventName) {
+      recognizeStream.on(eventName, console.log.bind(console, eventName + ' event:'))
     })
 
     recognizeStream.on('error', reject)
 
-    recognizeStream.on('connection-close', function () {
+    recognizeStream.on('end', function () {
       const transcriptFile = path.join(__dirname, 'transcript.json')
 
       fs.writeFile(transcriptFile, JSON.stringify(results), function (err) {
