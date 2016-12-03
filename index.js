@@ -12,7 +12,8 @@ const config = JSON.parse(fs.readFileSync('config.json'))
 const app = koa()
 
 render(app, {
-  root: path.join(__dirname, 'view')
+  root: path.join(__dirname, 'view'),
+  cache: false
 })
 
 app.use(serve(path.join(__dirname, 'public')))
@@ -22,14 +23,15 @@ app.use(route.get('/:videoId', function*(videoId) {
   const transcript = yield youtube.getYouTubeAudio(videoId)
     .then(watson.watsonSpeechToText.bind(this, config.watson, videoId))
   yield this.render('article', {
+    title: 'Youtube video',
     transcript: transcript.sort((a, b) => a.result_index - b.result_index).map(t => {
       return {
         type: 'text',
         value: t.results[0].alternatives.sort((a, b) => a.confidence - b.confidence)[0].transcript
       }
     }),
-    metadata: {}}
-  )
+    metadata: {}
+  })
 }))
 
 new Promise(resolve => {

@@ -1,3 +1,5 @@
+<h1><%= title %></h1>
+
 <h3>TL;DR;</h3>
 <% metadata && metadata.concepts && metadata.concepts.filter(function (c) { return c.relevance > 0.3 }).map(function (c) { %>
    <div>
@@ -7,6 +9,7 @@
 <% }) %>
 
 <h3>Transcript</h3>
+<div class="transcript">
 <% transcript.map(function (m) { %>
   <% if (m.type === 'text') { %>
     <div class="<%= m.type %>">
@@ -23,3 +26,4 @@
     </div>
   <% } %>
 <% }) %>
+</div>
