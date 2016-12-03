@@ -21,7 +21,8 @@ module.exports = config => {
   const api = {
     recognize: denodeify(watsonSpeechToText.recognize.bind(watsonSpeechToText)),
     tone: denodeify(watsonToneAnalyzer.tone.bind(watsonToneAnalyzer)),
-    concepts: denodeify(alchemyLanguage.concepts.bind(alchemyLanguage))
+    concepts: denodeify(alchemyLanguage.concepts.bind(alchemyLanguage)),
+    keywords: denodeify(alchemyLanguage.keywords.bind(alchemyLanguage))
   }
 
   const speechToText = (videoId, audioFile, onLine) =>
@@ -38,6 +39,13 @@ module.exports = config => {
 
   const concepts = text => api.concepts({text})
 
+  const keywords = text => api.keywords({
+    text,
+    knowledgeGraph: 1,
+    emotion: 1,
+    sentiment: 1
+  })
+
   const augment = (predicate, behaviour) => transcript => {
     if (predicate(transcript)) {
       return transcript
@@ -45,6 +53,9 @@ module.exports = config => {
     return behaviour(transcript)
       .then(() => transcript)
   }
+
+  const extractText = transcript =>
+    transcript.results.map(result => result.alternatives[0].transcript).join('\n')
 
   const analyze = (videoId, audioFile) => {
     console.log(`${videoId}: Analysing...`)
@@ -66,9 +77,16 @@ module.exports = config => {
       }))
       .then(augment(transcript => transcript.concepts, transcript => {
         console.log(`${videoId}: Extracting concepts...`)
-        return concepts(transcript.results.map(result => result.alternatives[0].transcript).join('\n'))
+        return concepts(extractText(transcript))
           .then(result => {
             transcript.concepts = result.concepts
+          })
+      }))
+      .then(augment(transcript => transcript.keywords, transcript => {
+        console.log(`${videoId}: Extracting keywords...`)
+        return keywords(extractText(transcript))
+          .then(result => {
+            transcript.keywords = result.keywords
           })
       }))
       .then(augment(() => false, transcript => {
@@ -81,7 +99,6 @@ module.exports = config => {
   }
 
   return {
-    analyze,
-    speechToText
+    analyze
   }
 }
