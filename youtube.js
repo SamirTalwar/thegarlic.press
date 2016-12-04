@@ -1,8 +1,10 @@
-const {denodeify} = require('./promise')
 const childProcess = require('child_process')
-const ffmpeg = require('fluent-ffmpeg')
 const fs = require('fs')
+const path = require('path')
+const ffmpeg = require('fluent-ffmpeg')
 const request = require('request-promise-native')
+
+const {denodeify} = require('./promise')
 
 module.exports = config => {
   return {
@@ -12,7 +14,7 @@ module.exports = config => {
         qs: {
           part: 'snippet',
           id: videoId,
-          key: config.api_key
+          key: config.youtube.api_key
         },
         json: true
       })
@@ -20,9 +22,9 @@ module.exports = config => {
 
     download: videoId => {
       const videoUrl = `http://www.youtube.com/watch?v=${videoId}`
-      const fileFormat = `videos/${videoId}.%(ext)s`
-      const audioMp3File = `videos/${videoId}.mp3`
-      const audioFlacFile = `videos/${videoId}.flac`
+      const fileFormat = path.join(config.video_dir, `${videoId}.%(ext)s`)
+      const audioMp3File = path.join(config.video_dir, `${videoId}.mp3`)
+      const audioFlacFile = path.join(config.video_dir, `${videoId}.flac`)
 
       return denodeify(fs.stat)(audioFlacFile)
         .catch(() =>

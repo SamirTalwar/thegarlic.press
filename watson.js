@@ -1,9 +1,12 @@
-const {augment} = require('./munge')
-const {denodeify} = require('./promise')
-const watson = require('watson-developer-cloud')
 const fs = require('fs')
+const path = require('path')
+const watson = require('watson-developer-cloud')
+
 const groupBySpeaker = require('./groupBySpeaker')
 const addScreenshots = require('./addScreenshots')
+const {augment} = require('./munge')
+const {denodeify} = require('./promise')
+
 const ToneAnalyzerVersion = '2016-05-19'
 
 module.exports = config => {
@@ -11,14 +14,14 @@ module.exports = config => {
     version: 'v1',
     model: 'en-US_NarrowbandModel',
     speaker_labels: true
-  }, config['speech-to-text']))
+  }, config.watson['speech-to-text']))
   const watsonToneAnalyzer = watson.tone_analyzer(Object.assign({
     version: 'v3',
     version_date: ToneAnalyzerVersion
-  }, config['tone-analyzer']))
+  }, config.watson['tone-analyzer']))
   const alchemyLanguage = watson.alchemy_language(Object.assign({
     version: 'v1'
-  }, config['alchemy-language']))
+  }, config.watson['alchemy-language']))
 
   const api = {
     recognize: denodeify(watsonSpeechToText.recognize.bind(watsonSpeechToText)),
@@ -56,7 +59,7 @@ module.exports = config => {
 
   const analyze = (video, audioFile) => {
     console.log(`${video.id}: Analysing...`)
-    const transcriptFile = `videos/${video.id}.transcript`
+    const transcriptFile = path.join(config.video_dir, `${video.id}.transcript`)
     return denodeify(fs.readFile)(transcriptFile)
       .then(JSON.parse)
       .catch(() => {
@@ -95,9 +98,9 @@ module.exports = config => {
           })
       }))
       .then(augment(transcript => transcript.bySpeaker, transcript => {
-        console.log(`${video.id}: Group by skeaper and add screenshots...`)
+        console.log(`${video.id}: Group by speaker and add screenshots...`)
         transcript.bySpeaker = groupBySpeaker(transcript)
-        return addScreenshots(transcript)
+        return addScreenshots(config, transcript)
       }))
       .then(augment(() => false, transcript => {
         console.log(`${video.id}: Saving...`)

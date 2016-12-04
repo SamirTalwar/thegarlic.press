@@ -9,8 +9,10 @@ const Watson = require('./watson')
 const YouTube = require('./youtube')
 
 const config = JSON.parse(fs.readFileSync('config.json'))
-const watson = Watson(config.watson)
-const youtube = YouTube(config.youtube)
+config.video_dir = path.resolve(__dirname, config.video_dir)
+
+const watson = Watson(config)
+const youtube = YouTube(config)
 
 const app = koa()
 

@@ -12,6 +12,7 @@ Create a file called *config.json*:
 ```json
 {
   "port": 8080,
+  "video_dir": "videos",
   "watson": {
     "alchemy-language": {
       "api_key": "your API key"
