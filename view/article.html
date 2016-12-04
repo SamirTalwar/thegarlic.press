@@ -30,7 +30,7 @@
     </div>
     <% var emotion = (m.sentences.find(function(s) { return s.emotion_tone }) || {}).emotion_tone; if (emotion) { %>
       <div class="emoji">
-        <%= emojiMap[emotion] %>
+        <%= emojiMap[emotion.tone_id] %>
       </div>
     <% } %>
     <% (m.sentences || []).map(function (s) { %>
