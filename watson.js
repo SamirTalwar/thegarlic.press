@@ -80,7 +80,7 @@ module.exports = config => {
       }))
       .then(augment(transcript => transcript.results[0].document_tone, transcript => {
         console.log(`${video.id}: Identifying tone...`)
-        return Promise.all(transcript.results.map(result =>
+        return serial(() => transcript.results.map(result =>
           toneAnalyzer(result.alternatives[0].transcript)
             .then(tone => Object.assign({}, result, tone))))
           .then(resultsWithTones => {
@@ -126,4 +126,12 @@ module.exports = config => {
   return {
     analyze
   }
+}
+
+const serial = promises => {
+  if (promises.length === 0) {
+    return Promise.resolve([])
+  }
+  const [head, ...tail] = promises
+  return head().then(h => serial(tail).then(t => [h, ...t]))
 }
