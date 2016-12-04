@@ -24,11 +24,11 @@
     <% } %>
     <% m.sentences.map(function (s) { %>
       <div>
-        <%= s.text
-             .replace(/^\w/, function(s) {return s.toUpperCase()})
-             .replace(/%HESITATION/g, '🤔')
-             .replace(/ $/,'.')
-       %>
+        <% s.words.map(function (w) { %>
+        <span
+          style="<%= w.info.isKeyword ? 'font-weight:bold' : '' %>"
+        ><%= w.text %></span>
+        <% }) %>
       </div>
     <% }) %>
   </div>
