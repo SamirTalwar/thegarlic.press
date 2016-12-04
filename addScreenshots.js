@@ -8,7 +8,7 @@ function extract (config, videoId, timestamps) {
       .screenshots({
         timestamps,
         filename: `${videoId}-%s.png`,
-        folder: './public/snapshots',
+        folder: path.join(config.video_dir, 'snapshots'),
         size: '200x?'
       })
       .on('end', resolve)

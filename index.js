@@ -28,6 +28,7 @@ const analyse = videoId =>
         .then(audioFile => watson.analyze(video, audioFile)))
 
 app.use(serve(path.join(__dirname, 'public')))
+app.use(serve(path.join(__dirname, 'videos')))
 
 app.use(route.get('/:videoId.transcript', function*(videoId) {
   console.log(`HTTP GET /${videoId}.transcript`)
