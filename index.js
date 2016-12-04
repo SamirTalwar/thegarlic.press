@@ -30,6 +30,12 @@ const analyse = videoId =>
 app.use(serve(path.join(__dirname, 'public')))
 app.use(serve(path.join(__dirname, 'videos')))
 
+app.use(route.get('/', function*() {
+  console.log(`HTTP GET /`)
+  this.type = 'text/html'
+  yield this.render('body')
+}))
+
 app.use(route.get('/:videoId.transcript', function*(videoId) {
   console.log(`HTTP GET /${videoId}.transcript`)
   this.type = 'application/json'
