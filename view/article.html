@@ -1,8 +1,8 @@
-<h1><%= title %></h1>
+<h1><%= video.snippet.title %></h1>
 
 <div class="tldr">
   <h4>TL;DR;</h3>
-  <% metadata && metadata.concepts && metadata.concepts.filter(function (c) { return c.relevance > 0.3 }).map(function (c) { %>
+  <% keywords && keywords.filter(function (c) { return c.relevance > 0.3 }).map(function (c) { %>
      <div>
        <%= c.text %>
        <%= c.sentiment.type === 'positive' ? '👍' : (c.sentiment.type === 'negative' ? '👎' : '') %>
@@ -12,13 +12,11 @@
 
 <div class="transcript">
 <% var emojiMap = {sadness: '😔', anger: '😡', disgust: '🤢', fear: '😱', joy: '😊'} %>
-<% transcript.map(function (m) { %>
+<% bySpeaker.map(function (m) { %>
   <div class="item">
-    <% if (m.snapshot) { %>
-      <div class="snapshot">
-        <img src="<%= m.snapshot %>" alt="snapshot">
-      </div>
-    <% } %>
+    <div class="snapshot">
+      <img src="/snapshots/<%= m.videoId %>-<%= m.screenshotTime %>.png" alt="snapshot">
+    </div>
     <% var emotion = (m.sentences.find(function(s) { return s.emotion_tone }) || {}).emotion_tone; if (emotion) { %>
       <div class="emoji">
         <%= emojiMap[emotion] %>

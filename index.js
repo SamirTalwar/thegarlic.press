@@ -37,18 +37,7 @@ app.use(route.get('/:videoId', function*(videoId) {
   console.log(`HTTP GET /${videoId}`)
   const transcript = yield analyse(videoId)
   this.type = 'text/html'
-  yield this.render('article', {
-    title: 'Youtube video',
-    transcript: transcript.results.map(result => {
-      return {
-        type: 'text',
-        value: result.alternatives[0].transcript
-      }
-    }),
-    metadata: {
-      concepts: require('./mock/concept.json')
-    }
-  })
+  yield this.render('article', transcript)
 }))
 
 new Promise(resolve => {
