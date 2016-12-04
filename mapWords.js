@@ -26,8 +26,7 @@ module.exports = (transcript) => {
           conceptsMap[index] = c
         }
       })
-      splits = splits.sort((x,y) => x - y)
-      // console.log(splits)
+      splits = splits.sort((x, y) => x - y)
       var blocks = [[0, splits[0]]]
       var lastSplit = splits[0]
       splits.forEach(p => {
@@ -36,7 +35,6 @@ module.exports = (transcript) => {
           lastSplit = p
         }
       })
-      // console.log('blocks', blocks)
       s.words = blocks.map(t => {
         var index = t[0]
         var info = {}
@@ -55,7 +53,6 @@ module.exports = (transcript) => {
       })
       s.words[0].text = s.words[0].text.replace(/^\w/, l => l.toUpperCase())
       s.words[s.words.length - 1].text = s.words[s.words.length - 1].text.replace(/ $/, '.')
-      console.log(s.words)
     })
   })
 }
