@@ -104,3 +104,7 @@ h1 {
 .item:nth-child(2n) .emoji {
   left: -15px;
 }
+
+.concept {
+  text-transform: capitalize;
+}
