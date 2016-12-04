@@ -27,5 +27,5 @@ module.exports = (transcript) => {
     x.screenshotTime = Math.round((x.start + x.end )/2)
   })
   var timestamps = transcript.bySpeaker.map(x => x.screenshotTime)
-  return extract(transcript.videoId, timestamps)
+  return extract(transcript.video.id, timestamps)
 }
