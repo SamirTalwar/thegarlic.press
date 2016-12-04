@@ -111,8 +111,9 @@ module.exports = config => {
         console.log(`${video.id}: Saving...`)
         return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
       }))
-      .then(() => {
+      .then(transcript => {
         console.log(`${video.id}: Analysis complete.`)
+        return transcript
       })
   }
 
