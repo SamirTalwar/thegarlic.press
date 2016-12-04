@@ -19,22 +19,23 @@ render(app, {
   cache: false
 })
 
+const analyse = videoId =>
+  youtube.info(videoId)
+    .then(video =>
+      youtube.download(videoId)
+        .then(audioFile => watson.analyze(video, audioFile)))
+
 app.use(serve(path.join(__dirname, 'public')))
 
 app.use(route.get('/:videoId.transcript', function*(videoId) {
   console.log(`HTTP GET /${videoId}.transcript`)
   this.type = 'application/json'
-  this.body =
-    yield youtube.info(videoId)
-      .then(video =>
-        youtube.download(videoId)
-          .then(audioFile => watson.analyze(video, audioFile)))
+  this.body = yield analyse(videoId)
 }))
 
 app.use(route.get('/:videoId', function*(videoId) {
   console.log(`HTTP GET /${videoId}`)
-  const transcript = yield youtube.download(videoId)
-    .then(audioFile => watson.analyze(videoId, audioFile))
+  const transcript = yield analyse(videoId)
   this.type = 'text/html'
   yield this.render('article', {
     title: 'Youtube video',
