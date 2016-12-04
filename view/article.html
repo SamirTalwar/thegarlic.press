@@ -24,7 +24,11 @@
     <% } %>
     <% m.sentences.map(function (s) { %>
       <div>
-        <%= s.text.replace(/%HESITATION/g, '🤔') %>
+        <%= s.text
+             .replace(/^\w/, function(s) {return s.toUpperCase()})
+             .replace(/%HESITATION/g, '🤔')
+             .replace(/ $/,'.')
+       %>
       </div>
     <% }) %>
   </div>
