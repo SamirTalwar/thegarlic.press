@@ -16,7 +16,9 @@
     "koa-ejs": "3.0.0",
     "koa-route": "^2.4.2",
     "koa-static": "2.0.0",
-    "watson-developer-cloud": "git@github.com:Onurbon/node-sdk.git"
+    "request": "^2.79.0",
+    "request-promise-native": "^1.0.3",
+    "watson-developer-cloud": "git@github.com:Onurbon/node-sdk.git#b3671027d8e9063ea35ba217affe6f124ad2ca40"
   },
   "devDependencies": {
     "ejs-lint": "0.2.0",

@@ -1,3 +1,4 @@
+const {augment} = require('./munge')
 const {denodeify} = require('./promise')
 const watson = require('watson-developer-cloud')
 const fs = require('fs')
@@ -26,7 +27,7 @@ module.exports = config => {
     keywords: denodeify(alchemyLanguage.keywords.bind(alchemyLanguage))
   }
 
-  const speechToText = (videoId, audioFile, onLine) =>
+  const speechToText = audioFile =>
     api.recognize({
       content_type: 'audio/flac',
       audio: fs.createReadStream(audioFile),
@@ -35,6 +36,12 @@ module.exports = config => {
       model: 'en-US_NarrowbandModel',
       speaker_labels: true
     })
+      .then(transcript => {
+        transcript.results.forEach(result => {
+          result.alternatives.sort((a, b) => a.confidence - b.confidence)
+        })
+        return transcript
+      })
 
   const toneAnalyzer = text => api.tone({text})
 
@@ -47,36 +54,25 @@ module.exports = config => {
     sentiment: 1
   })
 
-  const augment = (predicate, behaviour) => transcript => {
-    if (predicate(transcript)) {
-      return transcript
-    }
-    const result = behaviour(transcript)
-    if (result && result.then) {
-      return result.then(() => transcript)
-    } else {
-      return transcript
-    }
-  }
-
-  const analyze = (videoId, audioFile) => {
-    console.log(`${videoId}: Analysing...`)
-    const transcriptFile = `videos/${videoId}.transcript`
+  const analyze = (video, audioFile) => {
+    console.log(`${video.id}: Analysing...`)
+    const transcriptFile = `videos/${video.id}.transcript`
     return denodeify(fs.readFile)(transcriptFile)
       .then(JSON.parse)
       .catch(() => {
-        console.log(`${videoId}: Converting speech to text...`)
-        return speechToText(videoId, audioFile)
+        console.log(`${video.id}: Converting speech to text...`)
+        return speechToText(audioFile)
       })
-      .then(augment(transcript => transcript.videoId, transcript => {
-        transcript.videoId = videoId
+      .then(augment(transcript => transcript.video, transcript => {
+        console.log(`${video.id}: Appending video information...`)
+        transcript.video = video
       }))
       .then(augment(transcript => transcript.text, transcript => {
-        console.log(`${videoId}: Concatenating text...`)
+        console.log(`${video.id}: Concatenating text...`)
         transcript.text = transcript.results.map(result => result.alternatives[0].transcript).join('\n')
       }))
       .then(augment(transcript => transcript.results[0].document_tone, transcript => {
-        console.log(`${videoId}: Identifying tone...`)
+        console.log(`${video.id}: Identifying tone...`)
         return Promise.all(transcript.results.map(result =>
           toneAnalyzer(result.alternatives[0].transcript)
             .then(tone => Object.assign({}, result, tone))))
@@ -85,29 +81,29 @@ module.exports = config => {
           })
       }))
       .then(augment(transcript => transcript.concepts, transcript => {
-        console.log(`${videoId}: Extracting concepts...`)
+        console.log(`${video.id}: Extracting concepts...`)
         return concepts(transcript.text)
           .then(result => {
             transcript.concepts = result.concepts
           })
       }))
       .then(augment(transcript => transcript.keywords, transcript => {
-        console.log(`${videoId}: Extracting keywords...`)
+        console.log(`${video.id}: Extracting keywords...`)
         return keywords(transcript.text)
           .then(result => {
             transcript.keywords = result.keywords
           })
       }))
       .then(augment(transcript => transcript.bySpeaker, transcript => {
-        console.log(`${videoId}: Group by skeaper and add screenshots...`)
+        console.log(`${video.id}: Group by skeaper and add screenshots...`)
         transcript.bySpeaker = groupBySpeaker(transcript)
         return addScreenshots(transcript)
       }))
       .then(augment(() => false, transcript => {
-        console.log(`${videoId}: Saving...`)
+        console.log(`${video.id}: Saving...`)
         return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
           .then(() => {
-            console.log(`${videoId}: Analysis complete.`)
+            console.log(`${video.id}: Analysis complete.`)
           })
       }))
   }
