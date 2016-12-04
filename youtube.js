@@ -23,15 +23,20 @@ module.exports = config => {
     download: videoId => {
       const videoUrl = `http://www.youtube.com/watch?v=${videoId}`
       const fileFormat = path.join(config.video_dir, `${videoId}.%(ext)s`)
+      const videoFile = path.join(config.video_dir, `${videoId}.mp4`)
       const audioMp3File = path.join(config.video_dir, `${videoId}.mp3`)
       const audioFlacFile = path.join(config.video_dir, `${videoId}.flac`)
 
-      return denodeify(fs.stat)(audioFlacFile)
+      return Promise.all([
+        denodeify(fs.stat)(videoFile),
+        denodeify(fs.stat)(audioFlacFile)
+      ])
         .catch(() =>
           new Promise((resolve, reject) => {
             const youtubeDl = childProcess.spawn('youtube-dl', [
               '--extract-audio',
               '--keep-video',
+              '--format=mp4',
               '--audio-format=mp3',
               `--output=${fileFormat}`,
               videoUrl
