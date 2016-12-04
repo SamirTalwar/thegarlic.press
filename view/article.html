@@ -2,7 +2,7 @@
 
 <div class="tldr">
   <h4>TL;DR;</h3>
-  <% keywords && keywords.filter(function (c) { return c.relevance > 0.3 }).map(function (c) { %>
+  <% keywords && keywords.filter(function (c) { return c.relevance > 0.7 }).map(function (c) { %>
      <div>
        <%= c.text %>
        <%= c.sentiment.type === 'positive' ? '👍' : (c.sentiment.type === 'negative' ? '👎' : '') %>
