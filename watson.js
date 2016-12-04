@@ -84,15 +84,14 @@ module.exports = config => {
             alternative.transcript = alternative.transcript.replace(/%HESITATION/g, '🤔')
           })
         })
-        transcript.text.replace(/%HESITATION/g, '🤔')
-      }))
-      .then(augment(transcript => transcript.video, transcript => {
-        console.log(`${video.id}: Appending video information...`)
-        transcript.video = video
       }))
       .then(augment(transcript => transcript.text, transcript => {
         console.log(`${video.id}: Concatenating text...`)
         transcript.text = transcript.results.map(result => result.alternatives[0].transcript).join('\n')
+      }))
+      .then(augment(transcript => transcript.video, transcript => {
+        console.log(`${video.id}: Appending video information...`)
+        transcript.video = video
       }))
       .then(augment(transcript => transcript.results.some(result => result.document_tone), transcript => {
         console.log(`${video.id}: Identifying tone...`)
