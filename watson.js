@@ -62,14 +62,19 @@ module.exports = config => {
     const transcriptFile = path.join(config.video_dir, `${video.id}.transcript`)
     return denodeify(fs.readFile)(transcriptFile)
       .then(JSON.parse)
-      .catch(() => {
+      .catch(() => ({}))
+      .then(augment(transcript => transcript.results && transcript.results.length > 0, transcript => {
         console.log(`${video.id}: Converting speech to text...`)
         return speechToText(audioFile)
+          .then(value => {
+            Object.assign(transcript, value)
+            return transcript
+          })
           .then(augment(() => false, transcript => {
             console.log(`${video.id}: Saving...`)
             return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
           }))
-      })
+      }))
       .then(augment(transcript => transcript.video, transcript => {
         console.log(`${video.id}: Appending video information...`)
         transcript.video = video
@@ -78,10 +83,10 @@ module.exports = config => {
         console.log(`${video.id}: Concatenating text...`)
         transcript.text = transcript.results.map(result => result.alternatives[0].transcript).join('\n')
       }))
-      .then(augment(transcript => transcript.results[0].document_tone, transcript => {
+      .then(augment(transcript => transcript.results.some(result => result.document_tone), transcript => {
         console.log(`${video.id}: Identifying tone...`)
-        return serial(() => transcript.results.map(result =>
-          toneAnalyzer(result.alternatives[0].transcript)
+        return serial(transcript.results.map(result =>
+          () => toneAnalyzer(result.alternatives[0].transcript)
             .then(tone => Object.assign({}, result, tone))))
           .then(resultsWithTones => {
             transcript.results = resultsWithTones
