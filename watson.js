@@ -102,10 +102,14 @@ module.exports = config => {
           })
       }))
       .then(augment(transcript => transcript.bySpeaker, transcript => {
-        console.log(`${video.id}: Group by speaker and add screenshots...`)
+        console.log(`${video.id}: Grouping by speaker...`)
         transcript.bySpeaker = groupBySpeaker(transcript)
         mapWords(transcript)
-        return addScreenshots(config, transcript)
+      }))
+      .then(augment(transcript => transcript.screenshots, transcript => {
+        console.log(`${video.id}: Taking screenshots...`)
+        const timestamps = addScreenshots(config, transcript)
+        transcript.screenshots = {timestamps}
       }))
       .then(augment(() => false, transcript => {
         console.log(`${video.id}: Saving...`)

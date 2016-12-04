@@ -22,4 +22,5 @@ module.exports = (config, transcript) => {
   })
   var timestamps = transcript.bySpeaker.map(x => x.screenshotTime)
   return extract(config, transcript.video.id, timestamps)
+    .then(() => timestamps)
 }
