@@ -1,0 +1,22 @@
+{
+  "name": "The Garlic Press",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "This Garlic Press",
+  "homepage_url": "https://thegarlic.press",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "tabs",
+    "*://*.youtube.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["src/inject_action.js"]
+    }
+  ]
+}
