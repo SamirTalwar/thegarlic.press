@@ -3,23 +3,16 @@ const ffmpeg = require('fluent-ffmpeg')
 
 function extract (config, videoId, timestamps) {
   const videoFile = path.join(config.video_dir, `${videoId}.mp4`)
-  console.log('TIMESTAMPS: ' + JSON.stringify(timestamps))
   return new Promise((resolve, reject) => {
     ffmpeg(videoFile)
-      .on('end', () => {
-        console.log('ENDED!')
-        resolve()
-      })
-      .on('error', (err) => {
-        console.error(err)
-        reject(err)
-      })
       .screenshots({
         timestamps,
         filename: `${videoId}-%s.png`,
         folder: './public/snapshots',
         size: '200x?'
       })
+      .on('end', resolve)
+      .on('error', reject)
   })
 }
 
