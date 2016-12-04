@@ -45,6 +45,10 @@ h1 {
   font-weight: bold;
 }
 
+.title {
+  margin-left: -190px;
+}
+
 .tldr {
   position: fixed;
   width: 170px;
