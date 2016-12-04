@@ -1,17 +1,26 @@
-<h1><%= video.snippet.title %></h1>
+<h1 class="title"><%= video.snippet.title %></h1>
 
 <div class="tldr">
   <h4>TL;DR;</h3>
-  <% keywords && keywords.filter(function (c) { return c.relevance > 0.3 }).map(function (c) { %>
-     <div>
-       <%= c.text %>
+  <% keywords && keywords.filter(function (c) { return c.relevance > 0.7 && c.text.replace('HESITATION', '') }).map(function (c) { %>
+     <div class="concept">
+       <%= c.text.replace('HESITATION', '') %>
        <%= c.sentiment.type === 'positive' ? '👍' : (c.sentiment.type === 'negative' ? '👎' : '') %>
      </div>
   <% }) %>
+  <hr>
+  <!-- AddToAny BEGIN -->
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+  <a class="a2a_button_facebook"></a>
+  <a class="a2a_button_twitter"></a>
+  <a class="a2a_button_email"></a>
+  </div>
+  <script async src="https://static.addtoany.com/menu/page.js"></script>
+  <!-- AddToAny END -->
 </div>
 
 <div class="transcript">
-<% var emojiMap = {sadness: '😔', anger: '😡', disgust: '🤢', fear: '😱', joy: '😊'} %>
+<% var emojiMap = {sadness: '😔', anger: '😡', disgust: '💩', fear: '😱', joy: '😊'} %>
 <% bySpeaker.map(function (m) { %>
   <div class="item">
     <div class="snapshot">
@@ -24,7 +33,11 @@
     <% } %>
     <% m.sentences.map(function (s) { %>
       <div>
-        <%= s.text.replace(/%HESITATION/g, '🤔') %>
+        <% s.words.map(function (w) { %>
+        <span
+          style="<%= w.info.isKeyword ? 'font-weight:bold' : '' %>"
+        ><%= w.text %></span>
+        <% }) %>
       </div>
       <% if (s.gif) { %>
         <img src="<%= s.gif %>" class="gif"/>
