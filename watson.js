@@ -4,13 +4,9 @@ const watson = require('watson-developer-cloud')
 
 const groupBySpeaker = require('./groupBySpeaker')
 const addScreenshots = require('./addScreenshots')
-<<<<<<< 4c3093102e11279190f33cd0049dbf8c3ee0d24b
 const {augment} = require('./munge')
 const {denodeify} = require('./promise')
-
-=======
 const mapWords = require('./mapWords')
->>>>>>> map keywords and concepts
 const ToneAnalyzerVersion = '2016-05-19'
 
 module.exports = config => {
