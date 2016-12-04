@@ -28,7 +28,7 @@ const analyse = videoId =>
         .then(audioFile => watson.analyze(video, audioFile)))
 
 app.use(serve(path.join(__dirname, 'public')))
-app.use(serve(path.join(__dirname, 'videos')))
+app.use(serve(config.video_dir))
 
 app.use(route.get('/', function*() {
   console.log(`HTTP GET /`)
