@@ -12,11 +12,11 @@
         margin-top: 20vh;
         font-family: "Georgia", "Times New Roman", serif;
         font-size: 20px;
-        font-weight: bold;
         color: black;
       }
 
-      .crush p {
+      .crush * {
+        margin: 0 0 15px 0;
         text-align: center;
       }
 
@@ -29,6 +29,7 @@
         width: 45%;
         margin: 2.5%;
         float: left;
+        font-weight: bold;
         text-decoration: none;
       }
 
@@ -49,9 +50,10 @@
     </header>
     <div class="container">
       <form method="get" action="/go" class="crush">
-        <p>Crush a YouTube video</p>
+        <h3>Crush a YouTube video</h3>
         <p><input name="video" placeholder="Paste the URL here" pattern="((https?://)?(youtu\.be/|(www\.)?youtube.com/watch\?(v=|.+&amp;v=)))?[A-Za-z0-9_-]{10,16}(&amp;.+)?" size="50"/></p>
         <p><input type="button" value="Go"/></p>
+        <p><small>IBM Watson's speech-to-text conversion is not fast, so you'll have to wait approximately as long as the video for it to load. The second time around, it'll be super-fast.</small></p>
       </p>
 
       <a class="link" href="/ZXUimqDjC_E">
