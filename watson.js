@@ -50,7 +50,7 @@ module.exports = config => {
 
   const toneAnalyzer = text => api.tone({text})
 
-  const concepts = text => api.concepts({text})
+  const concepts = text => api.concepts({text: text.trim()})
 
   const keywords = text => api.keywords({
     text,
