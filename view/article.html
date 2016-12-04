@@ -19,6 +19,8 @@
   <!-- AddToAny END -->
 </div>
 
+<iframe width="600" height="315" src="https://www.youtube.com/embed/<%= video.id %>" frameborder="0" allowfullscreen style="margin-bottom: 20px;"></iframe>
+
 <div class="transcript">
 <% var emojiMap = {sadness: '😔', anger: '😡', disgust: '💩', fear: '😱', joy: '😊'} %>
 <% bySpeaker.map(function (m) { %>
@@ -31,9 +33,9 @@
         <%= emojiMap[emotion] %>
       </div>
     <% } %>
-    <% m.sentences.map(function (s) { %>
+    <% (m.sentences || []).map(function (s) { %>
       <div>
-        <% s.words.map(function (w) { %>
+        <% (s.words || []).map(function (w) { %>
         <span
           style="<%= w.info.isKeyword ? 'font-weight:bold' : '' %>"
         ><%= w.text %></span>
