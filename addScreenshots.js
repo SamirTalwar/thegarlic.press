@@ -21,9 +21,6 @@ function extract (config, videoId, timestamps) {
 }
 
 module.exports = (config, transcript) => {
-  transcript.bySpeaker.forEach(x => {
-    x.screenshotTime = Math.round((x.start + x.end) / 2)
-  })
   var timestamps = transcript.bySpeaker.map(x => x.screenshotTime)
   return extract(config, transcript.video.id, timestamps)
     .then(() => timestamps)

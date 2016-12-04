@@ -74,6 +74,9 @@ function groupBySpeaker (list) {
       last.sentences.push(o)
     }
   })
+  arr.forEach(x => {
+    x.screenshotTime = Math.round((x.start + x.end) / 2)
+  })
   return arr
 }
 
