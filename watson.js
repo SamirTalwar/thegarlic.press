@@ -59,7 +59,23 @@ module.exports = config => {
     sentiment: 1
   })
 
+  const inProcessing = new Set()
   const analyze = (video, audioFile) => {
+    if (inProcessing.has(video.id)) {
+      console.log(`${video.id}: Waiting...`)
+      const wait = () =>
+        new Promise(resolve => setTimeout(resolve, 5000))
+          .then(() => {
+            if (inProcessing.has(video.id)) {
+              return wait()
+            } else {
+              return analyze(video, audioFile)
+            }
+          })
+      return wait()
+    }
+
+    inProcessing.add(video.id)
     console.log(`${video.id}: Analysing...`)
     const transcriptFile = path.join(config.video_dir, `${video.id}.transcript`)
     return denodeify(fs.readFile)(transcriptFile)
@@ -135,7 +151,11 @@ module.exports = config => {
       }))
       .then(transcript => {
         console.log(`${video.id}: Analysis complete.`)
+        inProcessing.delete(video.id)
         return transcript
+      }, error => {
+        inProcessing.delete(video.id)
+        throw error
       })
   }
 
