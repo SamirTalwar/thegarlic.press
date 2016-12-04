@@ -30,10 +30,14 @@ const analyse = videoId =>
 app.use(serve(path.join(__dirname, 'public')))
 app.use(serve(config.video_dir))
 
-app.use(route.get('/', function*() {
-  console.log(`HTTP GET /`)
-  this.type = 'text/html'
-  yield this.render('body')
+app.use(route.get('/go', function*() {
+  console.log(`HTTP GET /go`)
+  const videoId = youtube.parseUrl(this.request.query.video)
+  if (videoId) {
+    this.redirect(`/${videoId}`)
+  } else {
+    this.status = 404
+  }
 }))
 
 app.use(route.get('/:videoId.transcript', function*(videoId) {

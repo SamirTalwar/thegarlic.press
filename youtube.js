@@ -6,8 +6,15 @@ const request = require('request-promise-native')
 
 const {denodeify} = require('./promise')
 
+const VideoRegexp = /(?:(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.)?youtube.com\/watch\?(?:v=|.+&amp;v=)))?([A-Za-z0-9_-]{10,16})(?:&amp;.+)?/
+
 module.exports = config => {
   return {
+    parseUrl: url => {
+      const result = VideoRegexp.exec(url)
+      return result && result[1]
+    },
+
     info: videoId =>
       request({
         url: 'https://www.googleapis.com/youtube/v3/videos',
