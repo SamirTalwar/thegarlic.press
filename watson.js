@@ -2,11 +2,13 @@ const fs = require('fs')
 const path = require('path')
 const watson = require('watson-developer-cloud')
 
-const groupBySpeaker = require('./groupBySpeaker')
+const addGifs = require('./addGifs')
 const addScreenshots = require('./addScreenshots')
+const groupBySpeaker = require('./groupBySpeaker')
+const mapWords = require('./mapWords')
 const {augment} = require('./munge')
 const {denodeify} = require('./promise')
-const mapWords = require('./mapWords')
+
 const ToneAnalyzerVersion = '2016-05-19'
 
 module.exports = config => {
@@ -110,6 +112,7 @@ module.exports = config => {
         console.log(`${video.id}: Grouping by speaker...`)
         transcript.bySpeaker = groupBySpeaker(transcript)
         mapWords(transcript)
+        return addGifs(config, transcript)
       }))
       .then(augment(transcript => transcript.screenshots, transcript => {
         console.log(`${video.id}: Taking screenshots...`)

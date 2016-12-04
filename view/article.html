@@ -26,6 +26,9 @@
       <div>
         <%= s.text.replace(/%HESITATION/g, '🤔') %>
       </div>
+      <% if (s.gif) { %>
+        <img src="<%= s.gif %>" class="gif"/>
+      <% } %>
     <% }) %>
   </div>
 <% }) %>

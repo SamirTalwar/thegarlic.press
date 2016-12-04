@@ -1,10 +1,10 @@
 var TONE_THREASHOLD = 0.5
 
-function topTone (list) {
+function findTopTone (list) {
   var filtered = list.filter(x => x.score > TONE_THREASHOLD)
   if (filtered.length === 0) { return null }
   var sorted = list.filter(x => x.score > 0.2).sort((x, y) => y.score - x.score)
-  return sorted[0].tone_id
+  return sorted[0]
 }
 
 function speakerOfWord (raw, time) {
@@ -45,9 +45,9 @@ function sentencies (raw) {
     var end = alt.timestamps[alt.timestamps.length - 1][2]
     var tones = {}
     x.document_tone.tone_categories.forEach(t => {
-      const val = topTone(t.tones)
-      if (val) {
-        tones[t.category_id] = val
+      const topTone = findTopTone(t.tones)
+      if (topTone) {
+        tones[t.category_id] = topTone
       }
     })
     return Object.assign({}, {text, start, end, speaker, videoId}, tones)

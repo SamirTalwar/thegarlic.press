@@ -106,3 +106,8 @@ h1 {
   left: -20px;
   margin-top: -30px;
 }
+
+.gif {
+  display: block;
+  margin: 1em auto;
+}
