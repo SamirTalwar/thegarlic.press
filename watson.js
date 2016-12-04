@@ -48,12 +48,12 @@ module.exports = config => {
         return transcript
       })
 
-  const toneAnalyzer = text => api.tone({text})
+  const toneAnalyzer = text => api.tone({text: text.trim()})
 
   const concepts = text => api.concepts({text: text.trim()})
 
   const keywords = text => api.keywords({
-    text,
+    text: text.trim(),
     knowledgeGraph: 1,
     emotion: 1,
     sentiment: 1
