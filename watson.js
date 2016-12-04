@@ -65,6 +65,10 @@ module.exports = config => {
       .catch(() => {
         console.log(`${video.id}: Converting speech to text...`)
         return speechToText(audioFile)
+          .then(augment(() => false, transcript => {
+            console.log(`${video.id}: Saving...`)
+            return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
+          }))
       })
       .then(augment(transcript => transcript.video, transcript => {
         console.log(`${video.id}: Appending video information...`)
@@ -106,10 +110,10 @@ module.exports = config => {
       .then(augment(() => false, transcript => {
         console.log(`${video.id}: Saving...`)
         return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
-          .then(() => {
-            console.log(`${video.id}: Analysis complete.`)
-          })
       }))
+      .then(() => {
+        console.log(`${video.id}: Analysis complete.`)
+      })
   }
 
   return {
