@@ -13,6 +13,9 @@ Create a file called *config.json*:
 {
   "port": 8080,
   "video_dir": "videos",
+  "giphy": {
+    "api_key": "your API key"
+  },
   "watson": {
     "alchemy-language": {
       "api_key": "your API key"
