@@ -77,6 +77,15 @@ module.exports = config => {
             return denodeify(fs.writeFile)(transcriptFile, JSON.stringify(transcript, null, 2))
           }))
       }))
+      .then(augment(() => false, transcript => {
+        console.log(`${video.id}: Emojing hesitations...`)
+        transcript.results.forEach(result => {
+          result.alternatives.forEach(alternative => {
+            alternative.transcript = alternative.transcript.replace(/%HESITATION/g, '🤔')
+          })
+        })
+        transcript.text.replace(/%HESITATION/g, '🤔')
+      }))
       .then(augment(transcript => transcript.video, transcript => {
         console.log(`${video.id}: Appending video information...`)
         transcript.video = video
