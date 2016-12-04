@@ -44,9 +44,18 @@ app.use(route.get('/:videoId.transcript', function*(videoId) {
 
 app.use(route.get('/:videoId', function*(videoId) {
   console.log(`HTTP GET /${videoId}`)
-  const transcript = yield analyse(videoId)
+  const transcript = yield Promise.race([
+    analyse(videoId),
+    new Promise(resolve => {
+      setTimeout(() => resolve(), 3000)
+    })
+  ])
   this.type = 'text/html'
-  yield this.render('article', transcript)
+  if (!transcript) {
+    yield this.render('waiting')
+  } else {
+    yield this.render('article', transcript)
+  }
 }))
 
 new Promise(resolve => {
