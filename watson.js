@@ -108,8 +108,10 @@ module.exports = config => {
       }))
       .then(augment(transcript => transcript.screenshots, transcript => {
         console.log(`${video.id}: Taking screenshots...`)
-        const timestamps = addScreenshots(config, transcript)
-        transcript.screenshots = {timestamps}
+        return addScreenshots(config, transcript)
+          .then(timestamps => {
+            transcript.screenshots = {timestamps}
+          })
       }))
       .then(augment(() => false, transcript => {
         console.log(`${video.id}: Saving...`)
